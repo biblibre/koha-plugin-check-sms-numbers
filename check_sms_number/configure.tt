@@ -1,0 +1,56 @@
+[% USE KohaDates %]
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Check sms numbers : Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Check sms numbers &rsaquo; Configuration</div>
+
+<div id="doc3">
+
+    <h1>Koha: Check sms numbers: Configuration</h1><br/>
+
+    <form method="get">
+        <input type="hidden" name="class" value="[% CLASS %]"/>
+        <input type="hidden" name="method" value="configure"/>
+
+        <label for="country">Choose the country for the sms number </label>
+        <select name="country">
+
+		[% IF country == 'None' %]
+                <option value="None" selected="selected">None</option>
+            [% ELSE %]
+                <option value="None">None</option>
+            [% END %]
+            [% IF country == 'fr' %]
+                <option value="fr" selected="selected">France</option>
+            [% ELSE %]
+                <option value="fr">France</option>
+            [% END %]
+
+            [% IF country == 'en' %]
+                <option value="en" selected="selected">England</option>
+            [% ELSE %]
+                <option value="en">England</option>
+            [% END %]
+
+            [% IF country == 'ge' %]
+                <option value="ge" selected="selected">Germany</option>
+            [% ELSE %]
+                <option value="ge">Germany</option>
+            [% END %]
+        </select>
+
+        <input type="hidden" name="op" value="save" />
+        <input type="submit" value="Save configuration" />
+        <input type="hidden" value="[% country %]" />
+
+    </form>
+
+    <hr/>
+
+[% INCLUDE 'intranet-bottom.inc' %]

@@ -1,0 +1,127 @@
+[% USE Koha %]
+[% USE KohaDates %]
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Check FR sms number: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Check FR sms number &rsaquo; Configuration</div>
+
+<div id="doc3">
+
+    <h1> Check [% country %] sms numbers </h1><br/>
+	[% IF (country == 'fr' ) %]
+	<form method="get">
+
+        <input type="hidden" name="class" value="[% CLASS %]"/>
+	<input type="hidden" name="method" value="tool"/>
+
+	<label for="extension">Transform patrons numbers into : </label>
+		<select name="extension">
+
+		[% IF extension == '06' %]
+			<option value="06" selected="selected">06XXXXXXXX</option>
+	            [% ELSE %]
+	                <option value="06">06XXXXXXXX</option>
+	            [% END %]
+
+	            [% IF extension == '+33' %]
+	                <option value="+33" selected="selected">+336XXXXXXX</option>
+	            [% ELSE %]
+	                <option value="+33">+336XXXXXXX</option>
+	            [% END %]
+
+	            [% IF extension == '0033' %]
+	                <option value="0033" selected="selected">00336XXXXXXX</option>
+	            [% ELSE %]
+	                <option value="0033">00336XXXXXXX</option>
+	            [% END %]
+
+	        </select>
+
+			<input type="submit" value="Search" />
+			<input type="hidden" name="op" value="search" />
+	</form>
+	[% ELSE %]
+	      <p>Ce pays n'est pas encore configuré</p>
+	[%  END %]
+
+	[% IF  (search) %]
+	<form method="get">
+	    <input type="hidden" name="class" value="[% CLASS %]"/>
+	<input type="hidden" name="method" value="tool"/>
+	    <br/><h3>Table of invalid [% country %] sms number : </h3>
+	    <h5>Check the numbers you want to transform with the option [% extension %]</h5><br/>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Number</th>
+					<th>Country</th>
+					<th>Patron</th>
+					<th>Option</th>
+					<th>Validity</th>
+					<th>Transform</th>
+				</tr>
+			</thead>
+			<tbody>
+
+			[% FOREACH patron IN patrons %]
+				<tr>
+					<td>[% patron.smsalertnumber %]</td>
+					<td>[% country %]</td>
+					<td> [% patron.id %]</td>
+					<td>[% extension %]</td>
+					<td> invalid </td>
+				<td><input type="checkbox" name="transformed[% patron.id %]" ></td>
+				</tr>
+			[%END%]
+
+			</tbody>
+		</table>
+		<br/>
+		<input type="submit" value="Transform" />
+		<input type="hidden" name="op" value="transformation" />
+		<input type="hidden" name="extension" value="[% extension %]" />
+	</form>
+	[% END %]
+
+	[% IF  (transformation ) %]
+		[% IF (min_one_check == 0) %]
+
+			<p>You didn't check any number, SEARCH again</p>
+
+		[% ELSE %]
+		<table>
+		<thead>
+			<tr>
+				<th>Old number</th>
+				<th>New number</th>
+				<th>Country</th>
+				<th>Patron</th>
+				<th>Option</th>
+			</tr>
+		</thead>
+
+		<tbody>
+		[% FOREACH patron IN patron_tranformed %]
+			<tr>
+				<td>[% patron.patron.smsalertnumber %]  </td>
+				<td>[% patron.number %]</td>
+				<td>[% country %]</td>
+				<td> [% patron.patron.id %]</td>
+				<td>[% extension %]</td>
+
+			</tr>
+		[% END %]
+			</tbody>
+		</table>
+		[% END %]
+	[% END %]
+
+
+[% INCLUDE 'intranet-bottom.inc' %]
