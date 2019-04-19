@@ -1,7 +1,7 @@
 package Koha::Plugin::check_sms_number::check_sms_number;
 
 use Modern::Perl;
-
+no strict 'refs';
 #required for all plugins
 use base qw(Koha::Plugins::Base);
 
@@ -9,7 +9,6 @@ use Koha::Patrons;
 use Koha::Plugin::check_sms_number::check_sms_number::fr;
 
 #the table in the plugins list of koha
-
 our $VERSION = "1.0";
 
 our $metadata = {
@@ -23,18 +22,12 @@ our $metadata = {
     version         => $VERSION,
 };
 
-#basic functions
-
 sub new {
     my ( $class, $args ) = @_;
 
-    ## We need to add our metadata here so our base class can access it
     $args->{'metadata'} = $metadata;
     $args->{'metadata'}->{'class'} = $class;
 
-    ## Here, we call the 'new' method for our base class
-    ## This runs some additional magic and checking
-    ## and returns our actual $self
     my $self = $class->SUPER::new($args);
 
     return $self;
@@ -44,109 +37,140 @@ sub configure {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
-	unless ($cgi->param('op') eq 'save'){
-
-		my $template = $self->get_template({ file => 'configure.tt' });
-		my $country = $self->retrieve_data('country');
-		$template->param(
-            country => $country,
-        );
-        $self->output_html( $template->output());
+    my $template = $self->get_template({ file => 'configure.tt' });
+    my $country = $self->retrieve_data('country');
+    my $op = $cgi->param('op');
+    
+    if ($op eq 'cancel_conf'){
+    	$self->go_home();
+    	exit;
+    }
+    
+	if ($op eq 'save'){
+	    
+		$self->store_data({
+            country => $cgi->param('country'),
+        });
+        $self->tool;
+        exit;
 	}
-    else {
-		$self->store_data(
-	    {
-	        country => $cgi->param('country'),
-	    }
-	    );
-	    $self->tool;
-	 }
 
+	$template->param(
+        country => $country,
+    );
+    $self->output_html( $template->output());
 }
-
 
 sub tool {
 	my( $self, $args ) = @_;
 	my $cgi = $self->{'cgi'};
 
-	my @patrons = Koha::Patrons->search({});
 	my $template = $self->get_template({ file => 'check_sms_number.tt'});
 	my $extension = $cgi->param('extension');
 	my $country = $self->retrieve_data('country');
+	my $string_check ;
+	my $patrons_transformed ;
 	my $i = 0;
+    my $op = $cgi->param('op');
+    
+    #CANCEL
+    if ($op eq 'cancel'){
+        
+        $op = 'search';       
+    }
 
-	if ( $cgi->param('op') eq 'search') {
-		my $check = "check$country";
+    #CONFIRM
+    if ($op eq 'confirm'){
+        
+        my @ids = $cgi->multi_param('ids');
+        my @new_numbers = $cgi->multi_param('new_numbers');
+        $i = 0;
+        
+        foreach my $id (@ids){
+            my $patron = Koha::Patrons->find($id);
+            my $patron_id = $patron->id();
+            
+            warn $new_numbers[$i];
+            unless ($new_numbers[$i] eq "This number can't be transformed"){
+               $patron->set({ smsalertnumber => $new_numbers[$i]})->store;
+           }
+           ++$i;
+        }
+        
+        $op = 'search';
+    }
+    
+    #SEARCH    
+	if ( $op eq 'search') {
+		my @patrons = Koha::Patrons->search({});
 		my @patrons_with_smsnumbers;
-
+        $i = 0;
+        
 		foreach my $patron (@patrons){
-		my $number = $patron->smsalertnumber();
+            my $number = $patron->smsalertnumber();
+            my $id = $patron->id();
 
-		if ($number) {
-			unless (Koha::Plugin::check_sms_number::check_sms_number::fr::check($number, $extension)){
-				$patrons_with_smsnumbers[$i] = $patron;
-			++$i;
+            if ($number) {
+                unless (eval 'Koha::Plugin::check_sms_number::check_sms_number::'.$country. '::check($number,$extension)'){
+				    $patrons_with_smsnumbers[$i] = $patron;
+                    ++$i;
+                }
 			}
-		}
 		}
 
 	    $template->param(
-		extension => $extension,
-		search => 1,
-		patrons => \@patrons_with_smsnumbers,
+			extension => $extension,
+			search => 1,
+			patrons => \@patrons_with_smsnumbers,
 		);
 	}
 
-	if ($cgi->param('op') eq 'transformation'){
+    #TRANSFORMATION
+	if ($op eq 'transformation'){
 
-		$extension = $cgi->param('extension');
-		my $transform = "transform$country";
-		my @patrons_transformed ;
 		my $min_one_check = 0;
-
-		$i = 0;
-
-		foreach my $patron (@patrons){
-
-			my $number = $patron->smsalertnumber();
-			my $id = $patron->id();
-
-			if($cgi->param('transformed'.$id)){
-				$min_one_check = 1;
-				my $new_number = Koha::Plugin::check_sms_number::check_sms_number::fr::transform($number, $extension);
-				push (@patrons_transformed,{'patron'=>$patron, 'number'=>$new_number });
-
-				if ($patrons_transformed[$i]{'number'} == $number){
-					$patrons_transformed[$i]{'number'} = "this number can't be transformed";
-				}
-			++$i;
-			}
-		}
-
+        my @ids = $cgi->multi_param('transformed');
+        $i = 0;
+        my @new_numbers;
+        
+        foreach my $id (@ids){
+        	my $patron = Koha::Patrons->find($id);
+        	my $number = $patron->smsalertnumber();
+            $min_one_check = 1;
+            
+            my $new_number = eval 'Koha::Plugin::check_sms_number::check_sms_number::'.$country.'::transform($number,$extension)';
+              
+            if ($new_number eq $number){
+                $new_number = "This number can't be transformed";
+            }
+            $new_numbers[$i] = $new_number; 
+            push @$patrons_transformed,{'patron'=>$patron, 'number'=>$new_number, 'old_number'=>$number , 'id'=>$id }; 
+            ++$i;
+        }
+        
+        foreach my $new_number (@new_numbers){
+        	unless ($new_number eq "This number can't be transformed"){
+        		$template->param(
+                    ok => 1,
+                );
+        	}
+        }
+        
 		$template->param(
 			min_one_check => $min_one_check,
-			patron_tranformed => \@patrons_transformed,
-			extension => $extension,
+			patron_transformed => $patrons_transformed,
+			ids => \@ids,
+			new_numbers => \@new_numbers,
 			transformation => 1,
 		);
 	}
-
+        
 	$template->param(
 		country => $country,
-		);
+		extension => $extension,
+	);
 
 	$self->output_html( $template->output() );
-
-}
-
-sub install() {
-    my ( $self, $args ) = @_;
-
-    return 1;
-}
-
-sub uninstall() {
-    my ( $self, $args ) = @_;
 }
 
 1;
