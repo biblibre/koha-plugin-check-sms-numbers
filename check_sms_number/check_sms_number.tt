@@ -125,7 +125,7 @@
                         [% ELSE %]
 			                
                             <p> All the numbers are valid for the extension "[% extension %]"</p>
-		                [% END %]
+                        [% END %]
                     [% END %]
 		
                     [% IF  (transformation) %]
