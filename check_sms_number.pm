@@ -49,7 +49,7 @@ sub configure {
 	if ($op eq 'save'){
 	    
 		$self->store_data({
-            country => $cgi->param('country'),
+			country => $cgi->param('country'),
         });
         $self->tool;
         exit;
