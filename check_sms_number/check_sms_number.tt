@@ -23,48 +23,48 @@
                     [% IF (country =='None') %]
                         <h3> Choose a country </h3>
 		                
-		                <form method="get">
+                        <form method="get">
 		                
-		                    <input type="hidden" name="class" value="[% CLASS %]"/>
-		                    <input type="hidden" name="method" value="configure"/>
+                            <input type="hidden" name="class" value="[% CLASS %]"/>
+                            <input type="hidden" name="method" value="configure"/>
 		                    
-		                    <input type="submit" value="Choose" />
+                            <input type="submit" value="Choose" />
 		                    
-		                </form>
+                        </form>
 		                
-		            [% ELSIF (country == 'fr' ) %]
-		                <form method="get">
-		                    <input type="hidden" name="class" value="[% CLASS %]"/>
-		                    <input type="hidden" name="method" value="tool"/>
+                    [% ELSIF (country == 'fr' ) %]
+                        <form method="get">
+                            <input type="hidden" name="class" value="[% CLASS %]"/>
+                            <input type="hidden" name="method" value="tool"/>
 		        
-		                    <label for="extension">Transform patrons numbers into : </label>
-		                    <select name="extension">
+                            <label for="extension">Transform patrons numbers into : </label>
+                            <select name="extension">
 		            
-		                        [% IF extension == '06' %]
-		                            <option value="06" selected="selected">06XXXXXXXX</option>
-		                        [% ELSE %]
-		                            <option value="06">06XXXXXXXX</option>
-		                        [% END %]
+                                [% IF extension == '06' %]
+                                    <option value="06" selected="selected">06XXXXXXXX</option>
+                                [% ELSE %]
+                                    <option value="06">06XXXXXXXX</option>
+                                [% END %]
 		                	        
-		                        [% IF extension == '+33' %]
-		                            <option value="+33" selected="selected">+336XXXXXXX</option>
-		                        [% ELSE %]
-		                            <option value="+33">+336XXXXXXX</option>
-		                        [% END %]
+                                [% IF extension == '+33' %]
+                                    <option value="+33" selected="selected">+336XXXXXXX</option>
+                                [% ELSE %]
+                                    <option value="+33">+336XXXXXXX</option>
+                                [% END %]
 		        
-		                        [% IF extension == '0033' %]
-		                            <option value="0033" selected="selected">00336XXXXXXX</option>
-		                        [% ELSE %]
-		                            <option value="0033">00336XXXXXXX</option>
-		                        [% END %]
+                                [% IF extension == '0033' %]
+                                    <option value="0033" selected="selected">00336XXXXXXX</option>
+                                [% ELSE %]
+                                    <option value="0033">00336XXXXXXX</option>
+                                [% END %]
 		            
-		                    </select>
+                            </select>
 		                    
-		                    <input type="submit" value="Search" />
-		                    <input type="hidden" name="op" value="search" />
-		                    <input type="hidden" name="extension" value="[% extension %]" />
+                            <input type="submit" value="Search" />
+                            <input type="hidden" name="op" value="search" />
+                            <input type="hidden" name="extension" value="[% extension %]" />
 		                    
-		                </form>
+                        </form>
 		                
 		                <form method="get">
 		                
