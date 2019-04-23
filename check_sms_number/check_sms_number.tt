@@ -19,9 +19,9 @@
             <div id="yui-main">
                 <div class="yui-b">
                 
-		            <h1> Check [% country %] sms numbers </h1><br/>
-		            [% IF (country =='None') %]
-		                <h3> Choose a country </h3>
+                <h1> Check [% country %] sms numbers </h1><br/>
+                    [% IF (country =='None') %]
+                        <h3> Choose a country </h3>
 		                
 		                <form method="get">
 		                
