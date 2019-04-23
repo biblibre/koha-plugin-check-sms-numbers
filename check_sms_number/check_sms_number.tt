@@ -33,6 +33,7 @@
                         </form>
 		                
                     [% ELSIF (country == 'fr' ) %]
+                    
                         <form method="get">
                             <input type="hidden" name="class" value="[% CLASS %]"/>
                             <input type="hidden" name="method" value="tool"/>
@@ -66,145 +67,145 @@
 		                    
                         </form>
 		                
-		                <form method="get">
+                        <form method="get">
 		                
-		                    <input type="hidden" name="class" value="[% CLASS %]"/>
-		                    <input type="hidden" name="method" value="configure"/>
+                            <input type="hidden" name="class" value="[% CLASS %]"/>
+                            <input type="hidden" name="method" value="configure"/>
 		                    
-		                    <input type="submit" value="Cancel" />
+                            <input type="submit" value="Cancel" />
 		                    
-		                </form>
+                        </form>
 		                
-		            [% ELSE %]
-		                <p>This country is not available</p>
-		            [% END %]
+                    [% ELSE %]
+                        <p>This country is not available</p>
+                    [% END %]
 		            
-		            [% IF  (search) %]
-		                [% IF (patrons) %]
-			                <form method="get"> 
+                    [% IF  (search) %]
+                        [% IF (patrons) %]
+                            <form method="get"> 
 			                
-			                    <input type="hidden" name="class" value="[% CLASS %]"/>
-			                    <input type="hidden" name="method" value="tool"/><br/>
-			                    <h3>Table of invalid [% country %] sms number : </h3>
-			                    <h5>Check the numbers you want to transform with the option [% extension %]</h5><br/>
+                                <input type="hidden" name="class" value="[% CLASS %]"/>
+                                <input type="hidden" name="method" value="tool"/><br/>
+                                <h3>Table of invalid [% country %] sms number : </h3>
+                                <h5>Check the numbers you want to transform with the option [% extension %]</h5><br/>
 			
-			                    <table>
-			                        <thead>
-			            				<tr>
-			            					<th>Number</th>
-			            					<th>Country</th>
-			            					<th>Patron</th>
-			            					<th>Option</th>
-			            					<th>Validity</th>
-			            					<th>Transform</th>
-			            				</tr>
-			                        </thead>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Number</th>
+                                            <th>Country</th>
+                                            <th>Patron</th>
+                                            <th>Option</th>
+                                            <th>Validity</th>
+                                            <th>Transform</th>
+                                        </tr>
+                                    </thead>
 			            			
-			                        <tbody>
-			                        [% FOREACH patron IN patrons %]
-			            				<tr>
-			            					<td>[% patron.smsalertnumber %]</td>
-			            					<td>[% country %]</td>
-			            					<td> [% patron.firstname %] [% patron.surname %]</td>
-			            					<td>[% extension %]</td>
-			            					<td> invalid </td>
-		                                    <td><input type="checkbox" name="transformed" value = "[% patron.id %]" ></td>
-			            				</tr>
-			            			[%END%]
-			                        </tbody>
+                                    <tbody>
+                                    [% FOREACH patron IN patrons %]
+                                        <tr>
+                                            <td>[% patron.smsalertnumber %]</td>
+                                            <td>[% country %]</td>
+                                            <td> [% patron.firstname %] [% patron.surname %]</td>
+                                            <td>[% extension %]</td>
+                                            <td> invalid </td>
+                                            <td><input type="checkbox" name="transformed" value = "[% patron.id %]" ></td>
+                                        </tr>
+                                    [%END%]
+                                    </tbody>
 			                        
-			                    </table><br/>
+                                </table><br/>
 			                        
-			                	<input type="submit" value="Transform" />
-			                	<input type="hidden" name="op" value="transformation" />
-			                	<input type="hidden" name="extension" value="[% extension %]" />
-			                	<input type="hidden" name="patron_tranformed" value="[% patron_tranformed %]" />
-			                </form>
+                                <input type="submit" value="Transform" />
+                                <input type="hidden" name="op" value="transformation" />
+                                <input type="hidden" name="extension" value="[% extension %]" />
+                                <input type="hidden" name="patron_tranformed" value="[% patron_tranformed %]" />
+                            </form>
 			                
-			                [% ELSE %]
+                        [% ELSE %]
 			                
-			                <p> All the numbers are valid for the extension "[% extension %]"</p>
+                            <p> All the numbers are valid for the extension "[% extension %]"</p>
 		                [% END %]
-		            [% END %]
+                    [% END %]
 		
-		            [% IF  (transformation) %]
+                    [% IF  (transformation) %]
 		            
-		                [% IF (min_one_check == 0) %]
-		                    <p>You didn't check any number, SEARCH again</p>
+                        [% IF (min_one_check == 0) %]
+                            <p>You didn't check any number, SEARCH again</p>
 		                
-		                [% ELSE %]
-		                    <br/><h3>Are you sure you want to transform these numbers</h3><br/>
-		                    <table>
+                        [% ELSE %]
+                            <br/><h3>Are you sure you want to transform these numbers</h3><br/>
+                            <table>
 		            		
-		                		<thead>
-		                			<tr>
-		                				<th>Old number</th>
-		                				<th>New number</th>
-		                				<th>Country</th>
-		                				<th>Patron</th>
-		                				<th>Option</th>
-		                			</tr>
-		                		</thead>
+                                <thead>
+                                    <tr>
+                                        <th>Old number</th>
+                                        <th>New number</th>
+                                        <th>Country</th>
+                                        <th>Patron</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
 		    
-		                        <tbody>
-		                            [% FOREACH patron IN patron_transformed %]
+                                <tbody>
+                                    [% FOREACH patron IN patron_transformed %]
 		                            
-		                    			<tr>
-		                    				<td>[% patron.patron.smsalertnumber %]  </td>
-		                    				<td>[% patron.number %]</td>
-		                    				<td>[% country %]</td>
-		                    				<td>[% patron.patron.firstname %] [% patron.patron.surname %]</td>
-		                    				<td>[% extension %]</td>
-		                    			</tr>	
-		                            [% END %]
-		                        </tbody>
+                                        <tr>
+                                            <td>[% patron.patron.smsalertnumber %]  </td>
+                                            <td>[% patron.number %]</td>
+                                            <td>[% country %]</td>
+                                            <td>[% patron.patron.firstname %] [% patron.patron.surname %]</td>
+                                            <td>[% extension %]</td>
+                                        </tr>	
+                                    [% END %]
+                                </tbody>
 		                        
-		                    </table>
+                            </table>
 		                    
-		                    [% IF (ok) %]
+                            [% IF (ok) %]
 		                        
-			                    <form method="get">
-			                        <input type="hidden" name="class" value="[% CLASS %]"/>
-			                        <input type="hidden" name="method" value="tool"/><br/>
+                                <form method="get">
+                                    <input type="hidden" name="class" value="[% CLASS %]"/>
+                                    <input type="hidden" name="method" value="tool"/><br/>
 			                        
-			                        <input type="submit" value="Confirm" />
-			                        <input type="hidden" name="op" value="confirm" />
-			                        <input type="hidden" name="extension" value="[% extension %]" />
+                                    <input type="submit" value="Confirm" />
+                                    <input type="hidden" name="op" value="confirm" />
+                                    <input type="hidden" name="extension" value="[% extension %]" />
 			                        
-			                            [% FOREACH id IN ids %]
-			                                <input type="hidden" name="ids" value="[% id %]" />
-			                            [% END %]
+                                        [% FOREACH id IN ids %]
+                                            <input type="hidden" name="ids" value="[% id %]" />
+                                        [% END %]
 			                            
-			                            [% FOREACH numbers IN new_numbers %]
-			                                <input type="hidden" name="new_numbers" value="[% numbers %]" />
-			                            [% END %]
+                                        [% FOREACH numbers IN new_numbers %]
+                                            <input type="hidden" name="new_numbers" value="[% numbers %]" />
+                                        [% END %]
 			
-			                    </form>
+                                </form>
 			                    
-			                    [% END %]
+                                [% END %]
 			                    
-				                <form method="get">
+                                <form method="get">
 				                
-				                    <input type="hidden" name="class" value="[% CLASS %]"/>
-				                    <input type="hidden" name="method" value="tool"/>
+                                    <input type="hidden" name="class" value="[% CLASS %]"/>
+                                    <input type="hidden" name="method" value="tool"/>
 				                    
-				                    <input type="submit" value="Cancel" />
-				                    <input type="hidden" name="op" value="cancel"/>
-				                    <input type="hidden" name="extension" value="[% extension %]" />
+                                    <input type="submit" value="Cancel" />
+                                    <input type="hidden" name="op" value="cancel"/>
+                                    <input type="hidden" name="extension" value="[% extension %]" />
 				                    
-				                </form>                
+                                </form>                
 		                    
-		                [% END %]
-		            [% END %]
+                        [% END %]
+                    [% END %]
                 </div><!-- yui-b -->
             </div><!-- yui-main -->
             
             <div class="yui-b noprint">
                 [% INCLUDE 'tools-menu.inc' %]
-	        </div> <!-- yui-b -->
+            </div> <!-- yui-b -->
 	        
-	    </div> <!-- bd -->
-	</div> <!-- doc3 -->
+        </div> <!-- bd -->
+    </div> <!-- doc3 -->
 </body>
 
 <footer>
