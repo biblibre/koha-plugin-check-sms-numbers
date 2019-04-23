@@ -90,9 +90,8 @@ sub tool {
             my $patron = Koha::Patrons->find($id);
             my $patron_id = $patron->id();
             
-            warn $new_numbers[$i];
             unless ($new_numbers[$i] eq "This number can't be transformed"){
-               $patron->set({ smsalertnumber => $new_numbers[$i]})->store;
+                $patron->set({ smsalertnumber => $new_numbers[$i]})->store;
            }
            ++$i;
         }
@@ -112,30 +111,30 @@ sub tool {
 
             if ($number) {
                 unless (eval 'Koha::Plugin::check_sms_number::check_sms_number::'.$country. '::check($number,$extension)'){
-				    $patrons_with_smsnumbers[$i] = $patron;
+                    $patrons_with_smsnumbers[$i] = $patron;
                     ++$i;
                 }
-			}
-		}
+            }
+        }
 
 	    $template->param(
-			extension => $extension,
-			search => 1,
-			patrons => \@patrons_with_smsnumbers,
-		);
-	}
+            extension => $extension,
+            search => 1,
+            patrons => \@patrons_with_smsnumbers,
+        );
+    }
 
     #TRANSFORMATION
-	if ($op eq 'transformation'){
+    if ($op eq 'transformation'){
 
-		my $min_one_check = 0;
+        my $min_one_check = 0;
         my @ids = $cgi->multi_param('transformed');
         $i = 0;
         my @new_numbers;
         
         foreach my $id (@ids){
-        	my $patron = Koha::Patrons->find($id);
-        	my $number = $patron->smsalertnumber();
+            my $patron = Koha::Patrons->find($id);
+            my $number = $patron->smsalertnumber();
             $min_one_check = 1;
             
             my $new_number = eval 'Koha::Plugin::check_sms_number::check_sms_number::'.$country.'::transform($number,$extension)';
@@ -149,28 +148,28 @@ sub tool {
         }
         
         foreach my $new_number (@new_numbers){
-        	unless ($new_number eq "This number can't be transformed"){
-        		$template->param(
+            unless ($new_number eq "This number can't be transformed"){
+                $template->param(
                     ok => 1,
                 );
         	}
         }
         
-		$template->param(
-			min_one_check => $min_one_check,
-			patron_transformed => $patrons_transformed,
-			ids => \@ids,
-			new_numbers => \@new_numbers,
-			transformation => 1,
-		);
-	}
+        $template->param(
+            min_one_check => $min_one_check,
+            patron_transformed => $patrons_transformed,
+            ids => \@ids,
+            new_numbers => \@new_numbers,
+            transformation => 1,
+        );
+    }
         
-	$template->param(
-		country => $country,
-		extension => $extension,
-	);
+    $template->param(
+        country => $country,
+        extension => $extension,
+    );
 
-	$self->output_html( $template->output() );
+    $self->output_html( $template->output() );
 }
 
 1;
