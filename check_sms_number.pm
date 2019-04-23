@@ -46,7 +46,7 @@ sub configure {
     	exit;
     }
     
-	if ($op eq 'save'){
+    if ($op eq 'save'){
 	    
         $self->store_data({
             country => $cgi->param('country'),
@@ -62,15 +62,15 @@ sub configure {
 }
 
 sub tool {
-	my( $self, $args ) = @_;
-	my $cgi = $self->{'cgi'};
+    my( $self, $args ) = @_;
+    my $cgi = $self->{'cgi'};
 
-	my $template = $self->get_template({ file => 'check_sms_number.tt'});
-	my $extension = $cgi->param('extension');
-	my $country = $self->retrieve_data('country');
-	my $string_check ;
-	my $patrons_transformed ;
-	my $i = 0;
+    my $template = $self->get_template({ file => 'check_sms_number.tt'});
+    my $extension = $cgi->param('extension');
+    my $country = $self->retrieve_data('country');
+    my $string_check ;
+    my $patrons_transformed ;
+    my $i = 0;
     my $op = $cgi->param('op');
     
     #CANCEL
@@ -101,12 +101,12 @@ sub tool {
     }
     
     #SEARCH    
-	if ( $op eq 'search') {
-		my @patrons = Koha::Patrons->search({});
-		my @patrons_with_smsnumbers;
+    if ( $op eq 'search') {
+        my @patrons = Koha::Patrons->search({});
+        my @patrons_with_smsnumbers;
         $i = 0;
         
-		foreach my $patron (@patrons){
+        foreach my $patron (@patrons){
             my $number = $patron->smsalertnumber();
             my $id = $patron->id();
 
