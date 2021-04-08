@@ -1,4 +1,4 @@
-package Koha::Plugin::check_sms_number::check_sms_number;
+package Koha::Plugin::Com::Biblibre::CheckSMSNumber;
 
 use Modern::Perl;
 no strict 'refs';
@@ -6,7 +6,7 @@ no strict 'refs';
 use base qw(Koha::Plugins::Base);
 
 use Koha::Patrons;
-use Koha::Plugin::check_sms_number::check_sms_number::fr;
+use Koha::Plugin::Com::Biblibre::CheckSMSNumber::Country::Fr;
 
 #the table in the plugins list of koha
 our $VERSION = "1.0";
@@ -37,7 +37,7 @@ sub configure {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
-    my $template = $self->get_template({ file => 'configure.tt' });
+    my $template = $self->get_template({ file => 'templates/configure.tt' });
     my $country = $self->retrieve_data('country');
     my $op = $cgi->param('op');
     
@@ -65,7 +65,7 @@ sub tool {
     my( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
-    my $template = $self->get_template({ file => 'check_sms_number.tt'});
+    my $template = $self->get_template({ file => 'templates/check_sms_number.tt'});
     my $extension = $cgi->param('extension');
     my $country = $self->retrieve_data('country');
     my $string_check ;

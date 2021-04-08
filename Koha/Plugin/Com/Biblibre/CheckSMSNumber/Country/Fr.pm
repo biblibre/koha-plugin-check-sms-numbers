@@ -1,4 +1,4 @@
-package Koha::Plugin::check_sms_number::check_sms_number::fr;
+package Koha::Plugin::Com::Biblibre::Country::CheckSMSNumber::Fr;
 
 use Modern::Perl;
 
